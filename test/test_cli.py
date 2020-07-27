@@ -58,8 +58,7 @@ class TestPruneCLI(unittest.TestCase):
         self.shutil_rmtree_mock = self.srm_patcher.start()
         self.dry_run = [
             'dry-run',
-            'foo-org',
-            'bar-repo',
+            'https://github.com/foo/bar',
             '--creds',
             './test/fixtures/faux_creds.ini'
         ]
@@ -127,7 +126,7 @@ class TestPruneCLI(unittest.TestCase):
         config = {'raw/foo/bar.json': 'A good reason'}
         self.prune.run(self.dry_run + ['--config', json.dumps(config)])
         self.git_repo_clone_from_mock.assert_called_once_with(
-            'https://1a2b3c4d5e6f7g8h9i0@github.ibm.com/foo-org/bar-repo',
+            'https://1a2b3c4d5e6f7g8h9i0@github.com/foo/bar',
             f'{tempfile.gettempdir()}/prune',
             branch='master'
         )
@@ -148,7 +147,7 @@ class TestPruneCLI(unittest.TestCase):
         config_file = './test/fixtures/faux_config.json'
         self.prune.run(self.dry_run + ['--config-file', config_file])
         self.git_repo_clone_from_mock.assert_called_once_with(
-            'https://1a2b3c4d5e6f7g8h9i0@github.ibm.com/foo-org/bar-repo',
+            'https://1a2b3c4d5e6f7g8h9i0@github.com/foo/bar',
             f'{tempfile.gettempdir()}/prune',
             branch='master'
         )
@@ -184,7 +183,7 @@ class TestPruneCLI(unittest.TestCase):
             ]
         )
         self.git_repo_clone_from_mock.assert_called_once_with(
-            'https://1a2b3c4d5e6f7g8h9i0@github.ibm.com/foo-org/bar-repo',
+            'https://1a2b3c4d5e6f7g8h9i0@github.com/foo/bar',
             f'{tempfile.gettempdir()}/prune',
             branch='master'
         )
@@ -212,7 +211,7 @@ class TestPruneCLI(unittest.TestCase):
             ]
         )
         self.git_repo_clone_from_mock.assert_called_once_with(
-            'https://1a2b3c4d5e6f7g8h9i0@github.ibm.com/foo-org/bar-repo',
+            'https://1a2b3c4d5e6f7g8h9i0@github.com/foo/bar',
             f'{tempfile.gettempdir()}/prune',
             branch='master'
         )
@@ -238,7 +237,7 @@ class TestPruneCLI(unittest.TestCase):
         config = {'raw/foo/bar.json': 'A good reason'}
         self.prune.run(self.push_remote + ['--config', json.dumps(config)])
         self.git_repo_clone_from_mock.assert_called_once_with(
-            'https://1a2b3c4d5e6f7g8h9i0@github.ibm.com/foo-org/bar-repo',
+            'https://1a2b3c4d5e6f7g8h9i0@github.com/foo/bar',
             f'{tempfile.gettempdir()}/prune',
             branch='master'
         )

@@ -18,23 +18,25 @@ import json
 import os
 import shutil
 import tempfile
+from urllib.parse import urlparse
+
+from compliance.utils.credentials import Config
 
 from ilcli import Command
 
 from prune import __version__ as version
 from prune.locker import PruneLocker
 
-from utilitarian import config_spec, credentials
-
 
 class _CorePruneCommand(Command):
 
     def _init_arguments(self):
         self.add_argument(
-            'org', help='the organization (owner) of a repository'
-        )
-        self.add_argument(
-            'repo', help='the name of a repository within an organization'
+            'locker',
+            help=(
+                'the URL to the evidence locker repository, '
+                'as an example https://github.com/my-org/my-repo'
+            )
         )
         self.add_argument(
             '--creds',
@@ -76,6 +78,12 @@ class _CorePruneCommand(Command):
         )
 
     def _validate_arguments(self, args):
+        parsed = urlparse(args.locker)
+        if not (parsed.scheme and parsed.hostname and parsed.path):
+            return (
+                'ERROR: locker url must be of the form '
+                'https://hostname/org/repo'
+            )
         if bool(args.config) == bool(args.config_file):
             return 'ERROR: Provide either a --config or a --config-file.'
         if args.git_config and args.git_config_file:
@@ -93,7 +101,7 @@ class _CorePruneCommand(Command):
         # self.name drives the Locker push mode.
         #   - dry-run translates to locker no-push mode
         #   - push-remote translates to locker full-remote mode
-        locker_args = [args.org, args.repo, args.creds, self.name, gitconfig]
+        locker_args = [args.locker, args.creds, self.name, gitconfig]
         local_locker_path = None
         evidences = args.config
         if not evidences:
@@ -116,19 +124,19 @@ class _CorePruneCommand(Command):
         self.out(self.outro_msg)
         self._remove_locker(local_locker_path)
 
-    def _get_locker(self, org, repo, creds, mode, gitconfig=None):
+    def _get_locker(self, repo, creds, mode, gitconfig=None):
         local_locker_path = f'{tempfile.gettempdir()}/prune'
         if os.path.isdir(local_locker_path):
             self.out('Local locker found...')
             self._remove_locker(local_locker_path)
         self.out(
-            f'Cloning local locker for {org}/{repo}.  '
-            'Depending on the size of your locker, this may take a while...'
+            f'Cloning local locker for {repo}.  Depending on the '
+            'size of your locker, this may take a while...'
         )
         return PruneLocker(
             name='prune',
-            repo_url=f'https://github.ibm.com/{org}/{repo}',
-            creds=credentials.Config(creds, spec=config_spec.NullConfigSpec()),
+            repo_url=repo,
+            creds=Config(creds),
             do_push=True if mode == 'push-remote' else False,
             gitconfig=gitconfig
         )

@@ -1,8 +1,10 @@
-# auditree-prune
-
 [![OS Compatibility][platform-badge]](#prerequisites)
 [![Python Compatibility][python-badge]][python-dl]
 [![pre-commit][pre-commit-badge]][pre-commit]
+[![Code validation](https://github.com/ComplianceAsCode/auditree-prune/workflows/format%20%7C%20lint%20%7C%20test/badge.svg)][lint-test]
+[![Upload Python Package](https://github.com/ComplianceAsCode/auditree-prune/workflows/PyPI%20upload/badge.svg)][pypi-upload]
+
+# auditree-prune
 
 The Auditree evidence removal tool.
 
@@ -27,13 +29,13 @@ site or installed using your package manager.
 Python version can be checked with:
 
 ```sh
-> python --version
+python --version
 ```
 
 or
 
 ```sh
-> python3 --version
+python3 --version
 ```
 
 The `prune` tool is available for download from [PyPI](https://pypi.org/).
@@ -44,23 +46,28 @@ It is best practice, but not mandatory, to run `prune` from a dedicated Python
 virtual environment.  Assuming that you have the Python [virtualenv][virtual-env]
 package already installed, you can create a virtual environment named `venv` by
 executing `virtualenv venv` which will create a `venv` folder at the location of
-where you executed the command.
+where you executed the command.  Alternatively you can use the python `venv` module
+to do the same.
+
+```sh
+python3 -m venv venv
+```
 
 Assuming that you have a virtual environment and that virtual environment is in
 the current directory then to install a new instance of `prune`, activate
 your virtual environment and use `pip` to install `prune` like so:
 
 ```sh
-> . ./venv/bin/activate
-> pip install auditree-prune
+. ./venv/bin/activate
+pip install auditree-prune
 ```
 
 As we add new features to `prune` you will want to upgrade your `prune`
 package.  To upgrade `prune` to the most recent version do:
 
 ```sh
-> . ./venv/bin/activate
-> pip install auditree-prune --upgrade
+. ./venv/bin/activate
+pip install auditree-prune --upgrade
 ```
 
 See [pip documentation][pip-docs] for additional options when using `pip`.
@@ -94,15 +101,15 @@ whereas `dry-run` will not.
 As most CLIs, Auditree `prune` comes with a help facility.
 
 ```sh
-> prune -h
+prune -h
 ```
 
 ```sh
-> prune push-remote -h
+prune push-remote -h
 ```
 
 ```sh
-> prune dry-run -h
+prune dry-run -h
 ```
 
 ### push-remote mode
@@ -113,11 +120,11 @@ key/value pairs as you need as part of the `--config` or as contents of your
 `--config-file`.
 
 ```sh
-> prune push-remote org-foo repo-bar --config '{"raw/foo/bar.json":"bar.json is abandoned",...}'
+prune push-remote https://github.com/org-foo/repo-bar --config '{"raw/foo/bar.json":"bar.json is abandoned",...}'
 ```
 
 ```sh
-> prune push-remote org-foo repo-bar --config-file ./path/to/my/prune/evidence.json
+prune push-remote https://github.com/org-foo/repo-bar --config-file ./path/to/my/prune/evidence.json
 ```
 
 ### dry-run mode
@@ -129,11 +136,11 @@ You can provide as many _evidence path_/_reason for removal_ key/value pairs as 
 need as part of the `--config` or as contents of your `--config-file`.
 
 ```sh
-> prune dry-run org-foo repo-bar --config '{"raw/foo/bar.json":"bar.json is abandoned",...}'
+prune dry-run https://github.com/org-foo/repo-bar --config '{"raw/foo/bar.json":"bar.json is abandoned",...}'
 ```
 
 ```sh
-> prune dry-run org-foo repo-bar --config-file ./path/to/my/prune/evidence.json
+prune dry-run https://github.com/org-foo/repo-bar --config-file ./path/to/my/prune/evidence.json
 ```
 
 
@@ -144,3 +151,5 @@ need as part of the `--config` or as contents of your `--config-file`.
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [pip-docs]: https://pip.pypa.io/en/stable/reference/pip/
 [virtual-env]: https://pypi.org/project/virtualenv/
+[lint-test]: https://github.com/ComplianceAsCode/auditree-prune/actions?query=workflow%3A%22Test+python+code+%26+lint%22
+[pypi-upload]: https://github.com/ComplianceAsCode/auditree-prune/actions?query=workflow%3A%22Upload+Python+Package%22
