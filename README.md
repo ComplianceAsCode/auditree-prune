@@ -38,7 +38,7 @@ or
 python3 --version
 ```
 
-The `prune` tool is available for download from [PyPI](https://pypi.org/).
+The `prune` tool is available for download from [PyPI](https://pypi.org/project/auditree-prune/).
 
 ## Installation
 
@@ -151,5 +151,5 @@ prune dry-run https://github.com/org-foo/repo-bar --config-file ./path/to/my/pru
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [pip-docs]: https://pip.pypa.io/en/stable/reference/pip/
 [virtual-env]: https://pypi.org/project/virtualenv/
-[lint-test]: https://github.com/ComplianceAsCode/auditree-prune/actions?query=workflow%3A%22Test+python+code+%26+lint%22
-[pypi-upload]: https://github.com/ComplianceAsCode/auditree-prune/actions?query=workflow%3A%22Upload+Python+Package%22
+[lint-test]: https://github.com/ComplianceAsCode/auditree-prune/actions?query=workflow%3A%22format+%7C+lint+%7C+test%22
+[pypi-upload]: https://github.com/ComplianceAsCode/auditree-prune/actions?query=workflow%3A%22PyPI+upload%22
