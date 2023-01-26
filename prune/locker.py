@@ -1,4 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,12 +31,12 @@ class PruneLocker(Locker):
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Override check in routine with a custom prune commit message."""
         if exc_type:
-            self.logger.error(' '.join([str(exc_type), str(exc_val)]))
-        pruned_files = '\n'.join(self.pruned)
+            self.logger.error(" ".join([str(exc_type), str(exc_val)]))
+        pruned_files = "\n".join(self.pruned)
         self.checkin(
             (
-                'Pruned abandoned evidence at local time '
-                f'{time.ctime(time.time())}\n\n{pruned_files}'
+                "Pruned abandoned evidence at local time "
+                f"{time.ctime(time.time())}\n\n{pruned_files}"
             )
         )
         if self.repo_url_with_creds:
@@ -57,8 +56,8 @@ class PruneLocker(Locker):
             metadata = json.loads(open(index_file).read())
             ev_meta = metadata.get(evidence.name, {})
             tombstone_args = [evidence.name, ev_meta, reason]
-            if getattr(evidence, 'is_partitioned', False):
-                parts = ev_meta.get('partitions', {}).keys()
+            if getattr(evidence, "is_partitioned", False):
+                parts = ev_meta.get("partitions", {}).keys()
                 self.remove_partitions(evidence, parts)
                 tombstone_args[0] = parts
             else:
@@ -67,10 +66,10 @@ class PruneLocker(Locker):
                 )
             self.pruned.append(evidence.path)
             metadata[evidence.name] = {
-                'description': evidence.description,
-                'pruned_by': pruner,
-                'tombstones': self.create_tombstone_metadata(*tombstone_args)
+                "description": evidence.description,
+                "pruned_by": pruner,
+                "tombstones": self.create_tombstone_metadata(*tombstone_args),
             }
-            with open(index_file, 'w') as f:
+            with open(index_file, "w") as f:
                 f.write(format_json(metadata))
             self.repo.index.add([index_file])
