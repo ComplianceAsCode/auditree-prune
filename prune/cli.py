@@ -38,6 +38,11 @@ class _CorePruneCommand(Command):
             ),
         )
         self.add_argument(
+            "--clone-shallow-since-days",
+            help="use shallow clone for the evidence locker repository",
+            type=int,
+        )
+        self.add_argument(
             "--branch",
             help="Branch name for locker repository",
             default=False,
@@ -101,7 +106,13 @@ class _CorePruneCommand(Command):
         # self.name drives the Locker push mode.
         #   - dry-run translates to locker no-push mode
         #   - push-remote translates to locker full-remote mode
-        locker_args = [args.locker, args.creds, self.name, gitconfig]
+        locker_args = [
+            args.locker,
+            args.creds,
+            self.name,
+            gitconfig,
+            args.clone_shallow_since_days,
+        ]
         local_locker_path = None
         evidences = args.config
         if not evidences:
@@ -122,7 +133,9 @@ class _CorePruneCommand(Command):
         self.out(self.outro_msg)
         self._remove_locker(local_locker_path)
 
-    def _get_locker(self, repo, creds, mode, gitconfig=None):
+    def _get_locker(
+        self, repo, creds, mode, gitconfig=None, clone_shallow_since_days=None
+    ):
         local_locker_path = f"{tempfile.gettempdir()}/prune"
         if os.path.isdir(local_locker_path):
             self.out("Local locker found...")
@@ -131,13 +144,16 @@ class _CorePruneCommand(Command):
             f"Cloning local locker for {repo}.  Depending on the "
             "size of your locker, this may take a while..."
         )
-        return PruneLocker(
+        locker = PruneLocker(
             name="prune",
             repo_url=repo,
             creds=Config(creds),
             do_push=True if mode == "push-remote" else False,
             gitconfig=gitconfig,
         )
+        if clone_shallow_since_days is not None:
+            locker.clone_shallow_since_days = clone_shallow_since_days
+        return locker
 
     def _remove_locker(self, locker_path):
         self.out("Removing local locker...")
